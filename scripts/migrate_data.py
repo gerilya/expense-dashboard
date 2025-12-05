@@ -33,7 +33,8 @@ INDEX_MAPPING = {
             "category": {"type": "keyword"},
             "card": {"type": "keyword"},
             "amount": {"type": "float"},
-            "month": {"type": "keyword"}
+            "month": {"type": "keyword"},
+            "tags": {"type": "keyword"}
         }
     },
     "settings": {
@@ -96,6 +97,10 @@ async def migrate_data(json_path: Path) -> None:
         
         for i, expense in enumerate(expenses):
             try:
+                # Ensure tags field exists (default to empty list)
+                if "tags" not in expense:
+                    expense["tags"] = []
+                
                 await client.index(
                     index=INDEX_NAME,
                     document=expense

@@ -69,6 +69,8 @@ async def list_expenses(
     category: Optional[str] = Query(None, description="Filter by category"),
     card: Optional[str] = Query(None, description="Filter by card last 4 digits"),
     merchant: Optional[str] = Query(None, description="Search by merchant name"),
+    tags: Optional[list[str]] = Query(None, description="Filter by tags (multiple allowed)"),
+    tag_match: str = Query("any", description="Tag match mode: 'any' or 'all'"),
     min_amount: Optional[float] = Query(None, ge=0, description="Minimum amount"),
     max_amount: Optional[float] = Query(None, ge=0, description="Maximum amount"),
     size: int = Query(1000, ge=1, le=10000, description="Number of results"),
@@ -76,8 +78,8 @@ async def list_expenses(
     """
     List all expenses with optional filters.
     
-    Supports filtering by month, category, card, merchant search,
-    and amount range.
+    Supports filtering by month, category, card, tags (with any/all match mode),
+    merchant search, and amount range.
     """
     # Build query
     must_clauses = []
@@ -90,6 +92,17 @@ async def list_expenses(
     
     if card:
         must_clauses.append({"term": {"card": card}})
+    
+    # Multi-tag filtering with any/all logic
+    if tags:
+        normalized_tags = [t.lower() for t in tags]
+        if tag_match == "all":
+            # ALL: must have every specified tag
+            for t in normalized_tags:
+                must_clauses.append({"term": {"tags": t}})
+        else:
+            # ANY (default): must have at least one of the specified tags
+            must_clauses.append({"terms": {"tags": normalized_tags}})
     
     if merchant:
         must_clauses.append({
@@ -279,6 +292,25 @@ async def list_cards():
     )
     
     return [bucket["key"] for bucket in response["aggregations"]["cards"]["buckets"]]
+
+
+@app.get("/api/tags", response_model=list[str])
+async def list_tags():
+    """Get all unique tags."""
+    response = await es_client.client.search(
+        index=es_client.index_name,
+        size=0,
+        aggs={
+            "tags": {
+                "terms": {
+                    "field": "tags",
+                    "size": 100
+                }
+            }
+        }
+    )
+    
+    return [bucket["key"] for bucket in response["aggregations"]["tags"]["buckets"]]
 
 
 if __name__ == "__main__":

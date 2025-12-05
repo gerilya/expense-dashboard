@@ -128,6 +128,174 @@
             font-size: 0.9em;
         }
 
+        .tag-filter-group {
+            position: relative;
+            margin-left: auto;
+        }
+
+        .tag-filter-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tag-picker {
+            position: relative;
+            min-width: 140px;
+        }
+
+        .tag-picker-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 38px;
+            padding: 6px 10px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag-picker-trigger:hover {
+            border-color: #667eea;
+        }
+
+        .tag-picker-trigger.active {
+            border-color: #667eea;
+        }
+
+        .tag-picker-placeholder {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .tag-picker-arrow {
+            color: #9ca3af;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        .selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .selected-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .selected-tag:hover {
+            background: #5a6fd6;
+        }
+
+        .selected-tag .remove-tag {
+            font-size: 14px;
+            line-height: 1;
+            opacity: 0.8;
+        }
+
+        .selected-tag:hover .remove-tag {
+            opacity: 1;
+        }
+
+        .tag-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 160px;
+            margin-top: 4px;
+            background: white;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .tag-dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.15s;
+        }
+
+        .tag-dropdown-item:hover {
+            background: #f3f4f6;
+        }
+
+        .tag-dropdown-item.selected {
+            background: #e8f4fd;
+            color: #1976d2;
+        }
+
+        .tag-dropdown-item .checkmark {
+            width: 16px;
+            color: #667eea;
+        }
+
+        .tag-dropdown-empty {
+            padding: 12px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        .tag-options {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85em;
+        }
+
+        .tag-match-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: normal;
+            cursor: pointer;
+            color: #5a6c7d;
+            white-space: nowrap;
+        }
+
+        .toggle-label input[type="radio"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .tag-clear-link {
+            color: #667eea;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tag-clear-link:hover {
+            text-decoration: underline;
+        }
+
         select, input {
             padding: 10px 15px;
             border: 2px solid #e0e6ed;
@@ -257,6 +425,22 @@
             border-radius: 12px;
             font-size: 0.8em;
             display: inline-block;
+        }
+
+        .tags-cell {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .tag-pill {
+            background-color: #e8f4fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            border: 1px solid #bbdefb;
         }
 
         .card-cell {
@@ -460,18 +644,18 @@
 <body>
     <div class="dashboard">
         <div class="header">
-            <h1>💳 Personal Expense Dashboard</h1>
+            <h1>Personal Expense Dashboard</h1>
             <p>Track and analyze your spending patterns</p>
             
             <div id="dataStatus" class="data-status data-loading">
-                ?? Connecting to Expense API...
+                Connecting to Expense API...
             </div>
         </div>
 
         <div id="dashboardContent" class="hidden">
             <div class="monthly-chart-container">
                 <div class="chart-container">
-                    <h3>📊 Monthly Spending Trend</h3>
+                    <h3>Monthly Spending Trend</h3>
                     <div class="chart">
                         <canvas id="monthlyChart"></canvas>
                     </div>
@@ -480,19 +664,19 @@
 
             <div class="charts-grid">
                 <div class="chart-container">
-                    <h3>🥧 Spending by Category</h3>
+                    <h3>Spending by Category</h3>
                     <div class="chart">
                         <canvas id="categoryChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-container">
-                    <h3>🏪 Top Merchants</h3>
+                    <h3>Top Merchants</h3>
                     <div class="chart">
                         <canvas id="merchantChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-container">
-                    <h3>💳 Spending by Card</h3>
+                    <h3>Spending by Card</h3>
                     <div class="chart">
                         <canvas id="cardChart"></canvas>
                     </div>
@@ -526,11 +710,38 @@
                     <label for="searchMerchant">Search Merchant:</label>
                     <input type="text" id="searchMerchant" placeholder="Enter merchant name...">
                 </div>
+                <div class="control-group tag-filter-group">
+                    <label>Filter by Tags:</label>
+                    <div class="tag-filter-row">
+                        <div class="tag-picker" id="tagPicker">
+                            <div class="tag-picker-trigger" onclick="toggleTagDropdown()">
+                                <div class="selected-tags" id="selectedTagsDisplay">
+                                    <span class="tag-picker-placeholder">Select...</span>
+                                </div>
+                                <span class="tag-picker-arrow">&#9660;</span>
+                            </div>
+                            <div class="tag-dropdown hidden" id="tagDropdown">
+                                <!-- Tags will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="tag-options">
+                            <div class="tag-match-toggle">
+                                <label class="toggle-label">
+                                    <input type="radio" name="tagMatch" value="any" checked> Any
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="radio" name="tagMatch" value="all"> All
+                                </label>
+                            </div>
+                            <span class="tag-clear-link" onclick="clearTagFilter()">Clear</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="transactions-section">
                 <div class="transactions-header">
-                    <h3>?? Recent Transactions</h3>
+                    <h3>Recent Transactions</h3>
                     <button class="btn btn-primary" onclick="openAddExpenseModal()">
                         + Add Expense
                     </button>
@@ -589,6 +800,11 @@
                 <div class="form-group">
                     <label for="expenseMonth">Month</label>
                     <input type="text" id="expenseMonth" placeholder="Jan 2024" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="expenseTags">Tags (comma-separated)</label>
+                    <input type="text" id="expenseTags" placeholder="business, lunch, client">
                 </div>
                 
                 <div id="formError" class="error-message hidden"></div>
@@ -739,7 +955,7 @@
                 
                 // Update status and show dashboard
                 dataStatus.className = 'data-status data-success';
-                dataStatus.innerHTML = `? Successfully loaded ${allExpenses.length} transactions from Elasticsearch`;
+                dataStatus.innerHTML = `Successfully loaded ${allExpenses.length} transactions from Elasticsearch`;
                 
                 setTimeout(() => {
                     dataStatus.style.display = 'none';
@@ -751,7 +967,7 @@
                 console.error('Error loading expense data:', error);
                 dataStatus.className = 'data-status data-error';
                 dataStatus.innerHTML = `
-                    ? Failed to connect to API: ${error.message}<br>
+                    Failed to connect to API: ${error.message}<br>
                     <small>Make sure the backend server is running at ${API_BASE_URL}</small>
                 `;
             }
@@ -769,10 +985,12 @@
             const months = [...new Set(allExpenses.map(exp => exp.month))];
             const categories = [...new Set(allExpenses.map(exp => exp.category))];
             const cards = [...new Set(allExpenses.map(exp => exp.card))];
+            const tags = [...new Set(allExpenses.flatMap(exp => exp.tags || []))];
 
             populateDropdown('monthFilter', sortMonthsChronologically(months));
             populateDropdown('categoryFilter', categories.sort());
             populateDropdown('cardFilter', cards.sort());
+            populateTagFilter(tags.sort());
         }
 
         function populateDropdown(elementId, options) {
@@ -788,11 +1006,112 @@
             });
         }
 
+        // Tag picker state
+        let availableTags = [];
+        let selectedTags = [];
+
+        function populateTagFilter(tags) {
+            availableTags = tags;
+            renderTagDropdown();
+        }
+
+        function renderTagDropdown() {
+            const dropdown = document.getElementById('tagDropdown');
+            
+            if (availableTags.length === 0) {
+                dropdown.innerHTML = '<div class="tag-dropdown-empty">No tags available</div>';
+                return;
+            }
+            
+            dropdown.innerHTML = availableTags.map(tag => {
+                const isSelected = selectedTags.includes(tag);
+                return `
+                    <div class="tag-dropdown-item ${isSelected ? 'selected' : ''}" 
+                         onclick="toggleTag('${tag}')">
+                        <span class="checkmark">${isSelected ? '&#10003;' : ''}</span>
+                        <span>${tag}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSelectedTags() {
+            const display = document.getElementById('selectedTagsDisplay');
+            
+            if (selectedTags.length === 0) {
+                display.innerHTML = '<span class="tag-picker-placeholder">Select tags...</span>';
+            } else {
+                display.innerHTML = selectedTags.map(tag => `
+                    <span class="selected-tag" onclick="event.stopPropagation(); removeTag('${tag}')">
+                        ${tag}
+                        <span class="remove-tag">x</span>
+                    </span>
+                `).join('');
+            }
+        }
+
+        function toggleTagDropdown() {
+            const dropdown = document.getElementById('tagDropdown');
+            const trigger = document.querySelector('.tag-picker-trigger');
+            
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                trigger.classList.add('active');
+            } else {
+                dropdown.classList.add('hidden');
+                trigger.classList.remove('active');
+            }
+        }
+
+        function closeTagDropdown() {
+            const dropdown = document.getElementById('tagDropdown');
+            const trigger = document.querySelector('.tag-picker-trigger');
+            dropdown.classList.add('hidden');
+            trigger.classList.remove('active');
+        }
+
+        function toggleTag(tag) {
+            if (selectedTags.includes(tag)) {
+                selectedTags = selectedTags.filter(t => t !== tag);
+            } else {
+                selectedTags.push(tag);
+            }
+            renderSelectedTags();
+            renderTagDropdown();
+            applyFilters();
+        }
+
+        function removeTag(tag) {
+            selectedTags = selectedTags.filter(t => t !== tag);
+            renderSelectedTags();
+            renderTagDropdown();
+            applyFilters();
+        }
+
+        function clearTagFilter() {
+            selectedTags = [];
+            renderSelectedTags();
+            renderTagDropdown();
+            applyFilters();
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const tagPicker = document.getElementById('tagPicker');
+            if (tagPicker && !tagPicker.contains(e.target)) {
+                closeTagDropdown();
+            }
+        });
+
         // Setup event listeners
         function setupEventListeners() {
             document.getElementById('monthFilter').addEventListener('change', applyFilters);
             document.getElementById('categoryFilter').addEventListener('change', applyFilters);
             document.getElementById('cardFilter').addEventListener('change', applyFilters);
+            // Listen for tag match mode changes
+            document.querySelectorAll('input[name="tagMatch"]').forEach(radio => {
+                radio.addEventListener('change', applyFilters);
+            });
             document.getElementById('searchMerchant').addEventListener('input', debounce(applyFilters, 300));
             document.getElementById('expenseForm').addEventListener('submit', handleExpenseSubmit);
         }
@@ -816,15 +1135,31 @@
             const categoryFilter = document.getElementById('categoryFilter').value;
             const cardFilter = document.getElementById('cardFilter').value;
             const searchTerm = document.getElementById('searchMerchant').value;
+            
+            // Get tag match mode (any or all)
+            const tagMatchMode = document.querySelector('input[name="tagMatch"]:checked').value;
 
-            // Filter locally for now (could also use API filters)
+            // Filter locally
             filteredExpenses = allExpenses.filter(expense => {
                 const monthMatch = monthFilter === 'all' || expense.month === monthFilter;
                 const categoryMatch = categoryFilter === 'all' || expense.category === categoryFilter;
                 const cardMatch = cardFilter === 'all' || expense.card === cardFilter;
                 const merchantMatch = expense.merchant.toLowerCase().includes(searchTerm.toLowerCase());
+                
+                // Multi-tag filtering with any/all logic
+                let tagMatch = true;
+                if (selectedTags.length > 0) {
+                    const expenseTags = expense.tags || [];
+                    if (tagMatchMode === 'all') {
+                        // ALL: expense must have every selected tag
+                        tagMatch = selectedTags.every(tag => expenseTags.includes(tag));
+                    } else {
+                        // ANY: expense must have at least one selected tag
+                        tagMatch = selectedTags.some(tag => expenseTags.includes(tag));
+                    }
+                }
 
-                return monthMatch && categoryMatch && cardMatch && merchantMatch;
+                return monthMatch && categoryMatch && cardMatch && tagMatch && merchantMatch;
             });
 
             updateDashboard();
@@ -1105,6 +1440,7 @@
                             <th>Date</th>
                             <th>Vendor Name</th>
                             <th>Category</th>
+                            <th>Tags</th>
                             <th>Card Number</th>
                             <th>Amount</th>
                             <th>Actions</th>
@@ -1116,6 +1452,7 @@
                                 <td>${transaction.date}</td>
                                 <td>${transaction.merchant}</td>
                                 <td><span class="category-cell">${transaction.category}</span></td>
+                                <td class="tags-cell">${(transaction.tags || []).map(tag => `<span class="tag-pill">${tag}</span>`).join('')}</td>
                                 <td class="card-cell">*${transaction.card}</td>
                                 <td class="amount-cell">${formatCurrency(transaction.amount)}</td>
                                 <td>
@@ -1156,6 +1493,7 @@
             document.getElementById('expenseCard').value = expense.card;
             document.getElementById('expenseAmount').value = expense.amount;
             document.getElementById('expenseMonth').value = expense.month;
+            document.getElementById('expenseTags').value = (expense.tags || []).join(', ');
             document.getElementById('formError').classList.add('hidden');
             document.getElementById('expenseModal').classList.remove('hidden');
         }
@@ -1192,13 +1530,21 @@
             const formError = document.getElementById('formError');
             const id = document.getElementById('expenseId').value;
             
+            // Parse tags from comma-separated input
+            const tagsInput = document.getElementById('expenseTags').value;
+            const tags = tagsInput
+                .split(',')
+                .map(tag => tag.trim().toLowerCase())
+                .filter(tag => tag.length > 0);
+            
             const expense = {
                 date: document.getElementById('expenseDate').value,
                 merchant: document.getElementById('expenseMerchant').value,
                 category: document.getElementById('expenseCategory').value,
                 card: document.getElementById('expenseCard').value,
                 amount: parseFloat(document.getElementById('expenseAmount').value),
-                month: document.getElementById('expenseMonth').value
+                month: document.getElementById('expenseMonth').value,
+                tags: tags
             };
             
             try {

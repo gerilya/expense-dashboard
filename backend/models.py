@@ -13,6 +13,7 @@ class ExpenseBase(BaseModel):
     card: str = Field(..., min_length=4, max_length=4, description="Last 4 digits of card")
     amount: float = Field(..., gt=0, description="Transaction amount")
     month: str = Field(..., description="Month in 'Mon YYYY' format", examples=["Jan 2024"])
+    tags: list[str] = Field(default_factory=list, description="List of tags for categorization")
     
     @field_validator("card")
     @classmethod
@@ -27,6 +28,12 @@ class ExpenseBase(BaseModel):
     def validate_amount(cls, v: float) -> float:
         """Round amount to 2 decimal places."""
         return round(v, 2)
+    
+    @field_validator("tags")
+    @classmethod
+    def validate_tags(cls, v: list[str]) -> list[str]:
+        """Normalize tags: lowercase, strip whitespace, remove duplicates."""
+        return list(set(tag.strip().lower() for tag in v if tag.strip()))
 
 
 class ExpenseCreate(ExpenseBase):
@@ -43,6 +50,7 @@ class ExpenseUpdate(BaseModel):
     card: Optional[str] = Field(None, min_length=4, max_length=4)
     amount: Optional[float] = Field(None, gt=0)
     month: Optional[str] = Field(None)
+    tags: Optional[list[str]] = Field(None, description="List of tags")
     
     @field_validator("card")
     @classmethod
@@ -57,6 +65,14 @@ class ExpenseUpdate(BaseModel):
     def validate_amount(cls, v: Optional[float]) -> Optional[float]:
         """Round amount to 2 decimal places if provided."""
         return round(v, 2) if v is not None else None
+    
+    @field_validator("tags")
+    @classmethod
+    def validate_tags(cls, v: Optional[list[str]]) -> Optional[list[str]]:
+        """Normalize tags if provided."""
+        if v is None:
+            return None
+        return list(set(tag.strip().lower() for tag in v if tag.strip()))
 
 
 class ExpenseResponse(ExpenseBase):

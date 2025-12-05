@@ -39,7 +39,8 @@ INDEX_MAPPING = {
             "category": {"type": "keyword"},
             "card": {"type": "keyword"},
             "amount": {"type": "float"},
-            "month": {"type": "keyword"}
+            "month": {"type": "keyword"},
+            "tags": {"type": "keyword"}
         }
     },
     "settings": {
